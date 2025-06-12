@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa Rutas Urbanas de </title>
+  <title>Mapa Rutas Urbanas de Saltillo</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  function cerrarBienvenida() {
+    document.getElementById('welcome-panel').style.display = 'none';
+  }
+</script>
   <style>
     body {
       margin: 0;
@@ -15,6 +19,7 @@
       height: 100vh;
       font-family: Arial, sans-serif;
     }
+
     #sidebar {
       background: linear-gradient(160deg, #1f2937 0%, #2c3e50 100%);
       box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
@@ -29,21 +34,32 @@
       flex-direction: column;
       animation: slideIn 0.4s ease-out;
     }
+
+    #sidebar img.logo {
+      width: 150px;
+      height: auto;
+      margin: 0 auto 1rem;
+      display: block;
+    }
+
     #map {
       flex-grow: 1;
       opacity: 0;
       animation: fadeInMap 1s ease forwards;
     }
+
     h2 {
       font-size: 1.5rem;
       margin-bottom: 1rem;
       color: #ffffff;
     }
+
     .ruta-item {
       margin-bottom: 0.5rem;
       border-bottom: 1px solid #374151;
       padding-bottom: 0.5rem;
     }
+
     .ruta-header {
       display: flex;
       align-items: center;
@@ -51,16 +67,19 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
     .ruta-header:hover {
       background-color: #2f3b4e;
       border-radius: 6px;
       padding: 0.2rem 0.5rem;
     }
+
     .subopciones {
       margin-left: 1rem;
       margin-top: 0.25rem;
       font-size: 0.85rem;
     }
+
     .subopciones span {
       transition: all 0.3s ease;
       transform: scale(1);
@@ -74,87 +93,195 @@
       cursor: pointer;
       margin-right: 0.25rem;
     }
+
     .subopciones span:hover {
       transform: scale(1.05);
     }
 
+    .subopciones span:active {
+      transform: scale(0.95);
+    }
 
-.subopciones span:active {
-  transform: scale(0.95);
+    .subopciones span:hover,
+    .subopciones span.active {
+      background-color: #475d7c;
+    }
+
+    .toggle-icon {
+      transition: box-shadow 0.3s ease;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #080253;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+
+    .toggle-icon:not(.off) {
+      box-shadow: 0 0 6px 2px #10b981;
+    }
+
+    .toggle-icon.off {
+      background-color: #ffffff;
+    }
+
+    .ruta-nombre {
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    button {
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .leyenda {
+      font-size: 0.85rem;
+      background-color: #374151;
+      padding: 0.5rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      line-height: 1.4;
+    }
+
+    .leyenda span {
+      display: inline-block;
+      width: 1.2rem;
+      height: 0.6rem;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .solida {
+      background-color: white;
+    }
+
+    .discontinua {
+      border-bottom: 2px dashed white;
+    }
+
+    .social-icons {
+      margin-top: 2rem;
+      text-align: right;
+    }
+
+    .social-icons a {
+      color: #ffffff;
+      margin-left: 12px;
+      font-size: 1.5rem;
+      text-decoration: none;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInMap {
+      to {
+        opacity: 1;
+      }
+    }
+  #social {
+  margin-top: 2rem;
+  text-align: center;
 }
 
-.subopciones span:hover,
-.subopciones span.active {
-  background-color: #475d7c;
-}
-.toggle-icon {
-  transition: box-shadow 0.3s ease;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #080253;
-  display: inline-block;
-  margin-right: 0.5rem;
-}
-.toggle-icon:not(.off) {
-  box-shadow: 0 0 6px 2px #10b981;
+.social-icon {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 0 2px #ccc);
+  border-radius: 8px;
 }
 
-.toggle-icon.off {
-  background-color: #ffffff;
+.social-icon:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 5px #f43f5e);
 }
-.ruta-nombre {
-  font-weight: bold;
-  transition: color 0.3s ease;
+#welcome-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
-button {
+
+.welcome-box {
+  background: #1f2937;
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.welcome-box h1 {
+  font-size: 1.8rem;
   margin-bottom: 1rem;
-  padding: 0.5rem 1rem;
+  color: #fbbf24;
+}
+
+.welcome-box p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-box button {
   background-color: #3b82f6;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
   cursor: pointer;
 }
-button:hover {
+
+.welcome-box button:hover {
   background-color: #2563eb;
 }
-.leyenda {
-  font-size: 0.85rem;
-  background-color: #374151;
-  padding: 0.5rem;
-  border-radius: 5px;
-  margin-top: 1rem;
-  line-height: 1.4;
-}
-.leyenda span {
-  display: inline-block;
-  width: 1.2rem;
-  height: 0.6rem;
-  margin-right: 0.5rem;
-  vertical-align: middle;
-}
-.solida {
-  background-color: white;
-}
-.discontinua {
-  border-bottom: 2px dashed white;
-}
-
-@keyframes slideIn {
-from { transform: translateX(-100%); opacity: 0; }
-to { transform: translateX(0); opacity: 1; }
-}
-@keyframes fadeInMap {
-to {
-opacity: 1;
-}
-} </style>
-
+</style>
 </head>
 <body>
+  <div id="welcome-panel">
+    <div class="welcome-box">
+      <h1>¡Bienvenido a Saltillo en Ruta!</h1>
+      <p>Explora las rutas del transporte público de Saltillo de forma interactiva.</p>
+      <button onclick="cerrarBienvenida()">Entrar al Mapa</button>
+    </div>
+  </div>
+
   <div id="sidebar">
-    <input type="text" id="buscador" placeholder="Buscar .." style="padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: none;" />
+    <!-- Logo dentro del panel lateral -->
+    <img src="LOGO.jpg" alt="Logo de Rutas Urbanas de Saltillo" class="logo">
+
+    <h3 style="color: #fbbf24; font-size: 1.1rem; margin-top: 0.5rem;">¡SALTILLO EN RUTA!</h3>
+    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes visualizar las rutas de transporte urbano y explorar la ciudad. </p>
+    <h3 style="color: #ffffff; font-size: 1.1rem; margin-top: 0.5rem;">¡Bienvenido!</h3>
+    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes explorar las rutas de transporte público.</p>
+
+    <input type="text" id="buscador" placeholder="Buscar ruta..." style="padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: none;" />
     <h2>Rutas</h2>
     <button id="toggle-all">Mostrar/Ocultar todas</button>
     <div id="ruta-list"></div>
@@ -162,7 +289,18 @@ opacity: 1;
       <p><span class="solida"></span> Ida</p>
       <p><span class="discontinua"></span> Vuelta</p>
     </div>
+
+    <!-- Ícono de Instagram alineado a la derecha -->
+     <div id="social">
+      <a href="https://www.instagram.com/saltillo_en_ruta" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" class="social-icon">
+        <br>
+        <br>
+    <input type="text" id="informacion" placeholder="queja o sugerencia..." style="padding: 0.5rem; margin-botton: 1rem; border-radius: 5px; border: none;"/> 
+      </a>
+    </div>
   </div>
+
   <div id="map"></div>
 
   <script>
@@ -173,6 +311,7 @@ opacity: 1;
         item.style.display = nombre.includes(valor) ? 'block' : 'none';
       });
     });
+
     const map = L.map('map').setView([25.45, -100.97], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -189,13 +328,14 @@ opacity: 1;
           const ida = data.features[i];
           const vuelta = data.features[i + 1];
           const nombreBase = ida.properties.name;
+
           const rosaInvisible = ['#ffc0cb', 'pink', 'deeppink', 'hotpink'];
-const coloresAlternativos = ['#0077be', '#ff8c00', '#20c997', '#8a2be2', '#228b22', '#9932cc', '#ff4500', '#1e90ff', '#b22222', '#00bcd4', '#795548', '#009688', '#f44336', '#3f51b5', '#00aaff'];
-let colorOriginal = ida.properties.color || coloresAlternativos[i % coloresAlternativos.length];
-if (rosaInvisible.includes(colorOriginal.toLowerCase())) {
-  colorOriginal = coloresAlternativos[(i + 5) % coloresAlternativos.length];
-}
-const color = colorOriginal;
+          const coloresAlternativos = ['#0077be', '#ff8c00', '#20c997', '#8a2be2', '#228b22', '#9932cc', '#ff4500', '#1e90ff', '#b22222', '#00bcd4', '#795548', '#009688', '#f44336', '#3f51b5', '#00aaff'];
+          let colorOriginal = ida.properties.color || coloresAlternativos[i % coloresAlternativos.length];
+          if (rosaInvisible.includes(colorOriginal.toLowerCase())) {
+            colorOriginal = coloresAlternativos[(i + 5) % coloresAlternativos.length];
+          }
+          const color = colorOriginal;
 
           const capaIda = L.geoJSON(ida, {
             style: { color: color, weight: 4 },
@@ -207,145 +347,141 @@ const color = colorOriginal;
           });
 
           const capaVuelta = L.geoJSON(vuelta, {
-  style: { color: color, weight: 4, dashArray: '5, 5' },
-  onEachFeature: (f, layer) => {
-    layer.bindPopup(`<strong>${f.properties.name}</strong><br>${f.properties.description || ''}<br><strong>Sentido:</strong> ${f.properties.sentido}`);
-    layer.on('mouseover', function () { layer.openPopup(); });
-    layer.on('mouseout', function () { layer.closePopup(); });
-  }
-});
+            style: { color: color, weight: 4, dashArray: '5, 5' },
+            onEachFeature: (f, layer) => {
+              layer.bindPopup(`<strong>${f.properties.name}</strong><br>${f.properties.description || ''}<br><strong>Sentido:</strong> ${f.properties.sentido}`);
+              layer.on('mouseover', function () { layer.openPopup(); });
+              layer.on('mouseout', function () { layer.closePopup(); });
+            }
+          });
 
           const inicio = ida.geometry.coordinates[0];
-const fin = ida.geometry.coordinates[ida.geometry.coordinates.length - 1];
-const inicioVuelta = vuelta.geometry.coordinates[0];
-const finVuelta = vuelta.geometry.coordinates[vuelta.geometry.coordinates.length - 1];
+          const fin = ida.geometry.coordinates[ida.geometry.coordinates.length - 1];
+          const inicioVuelta = vuelta.geometry.coordinates[0];
+          const finVuelta = vuelta.geometry.coordinates[vuelta.geometry.coordinates.length - 1];
 
-const markerInicio = L.circleMarker([inicio[1], inicio[0]], {
-  radius: 6,
-  fillColor: 'green',
-  color: '#000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.9
-}).bindTooltip('Inicio', { permanent: true, direction: 'top' });
+          const markerInicio = L.circleMarker([inicio[1], inicio[0]], {
+            radius: 6,
+            fillColor: 'green',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).bindTooltip('Inicio', { permanent: true, direction: 'top' });
 
-const markerFin = L.circleMarker([fin[1], fin[0]], {
-  radius: 6,
-  fillColor: 'red',
-  color: '#000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.9
-}).bindTooltip('Fin', { permanent: true, direction: 'top' });
+          const markerFin = L.circleMarker([fin[1], fin[0]], {
+            radius: 6,
+            fillColor: 'red',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).bindTooltip('Fin', { permanent: true, direction: 'top' });
 
-const markerInicioVuelta = L.circleMarker([inicioVuelta[1], inicioVuelta[0]], {
-  radius: 6,
-  fillColor: 'blue',
-  color: '#000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.9
-}).bindTooltip('Inicio (Vuelta)', { permanent: true, direction: 'top' });
+          const markerInicioVuelta = L.circleMarker([inicioVuelta[1], inicioVuelta[0]], {
+            radius: 6,
+            fillColor: 'blue',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).bindTooltip('Inicio (Vuelta)', { permanent: true, direction: 'top' });
 
-const markerFinVuelta = L.circleMarker([finVuelta[1], finVuelta[0]], {
-  radius: 6,
-  fillColor: 'purple',
-  color: '#000',
-  weight: 1,
-  opacity: 1,
-  fillOpacity: 0.9
-}).bindTooltip('Fin (Vuelta)', { permanent: true, direction: 'top' });
+          const markerFinVuelta = L.circleMarker([finVuelta[1], finVuelta[0]], {
+            radius: 6,
+            fillColor: 'purple',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).bindTooltip('Fin (Vuelta)', { permanent: true, direction: 'top' });
 
-const grupo = L.layerGroup([capaIda, capaVuelta]);
-const grupoMarkers = L.layerGroup([markerInicio, markerFin, markerInicioVuelta, markerFinVuelta]);
+          const grupo = L.layerGroup([capaIda, capaVuelta]);
+          const grupoMarkers = L.layerGroup([markerInicio, markerFin, markerInicioVuelta, markerFinVuelta]);
 
           capasRutas[nombreBase] = { ida: capaIda, vuelta: capaVuelta, grupo, grupoMarkers };
-          // grupo.addTo(map);
-
-          // eliminado: crearLabel ya no es necesario
 
           const contenedor = document.createElement('div');
-contenedor.style.marginBottom = '1rem';
+          contenedor.style.marginBottom = '1rem';
 
-const titulo = document.createElement('h3');
-titulo.textContent = nombreBase;
-titulo.style.marginBottom = '0.5rem';
-titulo.style.fontSize = '1rem';
-titulo.style.color = '#AED6F1';
-titulo.style.cursor = 'pointer';
+          const titulo = document.createElement('h3');
+          titulo.textContent = nombreBase;
+          titulo.style.marginBottom = '0.5rem';
+          titulo.style.fontSize = '1rem';
+          titulo.style.color = '#AED6F1';
+          titulo.style.cursor = 'pointer';
 
+          const contenido = document.createElement('div');
+          contenido.className = 'contenido';
+          contenido.style.display = 'none';
+          contenido.style.transition = 'all 0.3s ease-in-out';
+          contenido.style.flexWrap = 'wrap';
+          contenido.style.gap = '0.5rem';
 
+          const sub = document.createElement('div');
+          sub.className = 'subopciones';
+          sub.innerHTML = '<span>Ida</span><span>Vuelta</span><span class="active">Ambas</span>';
 
-const contenido = document.createElement('div');
-contenido.className = 'contenido';
-contenido.style.display = 'none';
-  contenido.style.transition = 'all 0.3s ease-in-out';
-contenido.style.flexWrap = 'wrap';
-contenido.style.gap = '0.5rem';
+          sub.children[0].addEventListener('click', () => {
+            map.removeLayer(capasRutas[nombreBase].vuelta);
+            map.removeLayer(markerInicioVuelta);
+            map.removeLayer(markerFinVuelta);
+            capasRutas[nombreBase].ida.addTo(map);
+            markerInicio.addTo(map);
+            markerFin.addTo(map);
+            Array.from(sub.children).forEach(s => s.classList.remove('active'));
+            sub.children[0].classList.add('active');
+          });
 
-const sub = document.createElement('div');
-sub.className = 'subopciones';
-sub.innerHTML = '<span>Ida</span><span>Vuelta</span><span class="active">Ambas</span>';
+          sub.children[1].addEventListener('click', () => {
+            map.removeLayer(capasRutas[nombreBase].ida);
+            map.removeLayer(markerInicio);
+            map.removeLayer(markerFin);
+            capasRutas[nombreBase].vuelta.addTo(map);
+            markerInicioVuelta.addTo(map);
+            markerFinVuelta.addTo(map);
+            Array.from(sub.children).forEach(s => s.classList.remove('active'));
+            sub.children[1].classList.add('active');
+          });
 
-sub.children[0].addEventListener('click', () => {
-  map.removeLayer(capasRutas[nombreBase].vuelta);
-  map.removeLayer(markerInicioVuelta);
-  map.removeLayer(markerFinVuelta);
-  capasRutas[nombreBase].ida.addTo(map);
-  markerInicio.addTo(map);
-  markerFin.addTo(map);
-  Array.from(sub.children).forEach(s => s.classList.remove('active'));
-  sub.children[0].classList.add('active');
-});
-sub.children[1].addEventListener('click', () => {
-  map.removeLayer(capasRutas[nombreBase].ida);
-  map.removeLayer(markerInicio);
-  map.removeLayer(markerFin);
-  capasRutas[nombreBase].vuelta.addTo(map);
-  markerInicioVuelta.addTo(map);
-  markerFinVuelta.addTo(map);
-  Array.from(sub.children).forEach(s => s.classList.remove('active'));
-  sub.children[1].classList.add('active');
-});
-sub.children[2].addEventListener('click', () => {
-  capasRutas[nombreBase].ida.addTo(map);
-  capasRutas[nombreBase].vuelta.addTo(map);
-  markerInicio.addTo(map);
-  markerFin.addTo(map);
-  map.removeLayer(markerInicioVuelta);
-  map.removeLayer(markerFinVuelta);
-  Array.from(sub.children).forEach(s => s.classList.remove('active'));
-  sub.children[2].classList.add('active');
-});
+          sub.children[2].addEventListener('click', () => {
+            capasRutas[nombreBase].ida.addTo(map);
+            capasRutas[nombreBase].vuelta.addTo(map);
+            markerInicio.addTo(map);
+            markerFin.addTo(map);
+            map.removeLayer(markerInicioVuelta);
+            map.removeLayer(markerFinVuelta);
+            Array.from(sub.children).forEach(s => s.classList.remove('active'));
+            sub.children[2].classList.add('active');
+          });
 
-const icon = document.createElement('span');
-icon.className = 'toggle-icon';
+          const icon = document.createElement('span');
+          icon.className = 'toggle-icon';
+          icon.classList.add('off');
 
-titulo.prepend(icon);
+          titulo.prepend(icon);
 
-let visible = false;
-  icon.classList.add('off');
-titulo.addEventListener('click', () => {
-  visible = !visible;
-  icon.classList.toggle('off', !visible);
-  const contenido = contenedor.querySelector('.contenido');
-  contenido.style.display = visible ? 'flex' : 'none';
-  if (visible) {
-    capasRutas[nombreBase].grupo.addTo(map);
-    capasRutas[nombreBase].grupoMarkers.addTo(map);
-  } else {
-    map.removeLayer(capasRutas[nombreBase].grupo);
-    map.removeLayer(capasRutas[nombreBase].grupoMarkers);
-  }
-});
+          let visible = false;
+          titulo.addEventListener('click', () => {
+            visible = !visible;
+            icon.classList.toggle('off', !visible);
+            const contenido = contenedor.querySelector('.contenido');
+            contenido.style.display = visible ? 'flex' : 'none';
+            if (visible) {
+              capasRutas[nombreBase].grupo.addTo(map);
+              capasRutas[nombreBase].grupoMarkers.addTo(map);
+            } else {
+              map.removeLayer(capasRutas[nombreBase].grupo);
+              map.removeLayer(capasRutas[nombreBase].grupoMarkers);
+            }
+          });
 
-toggles.push({ icon, layer: capasRutas[nombreBase].grupo });
+          toggles.push({ icon, layer: capasRutas[nombreBase].grupo });
 
-contenido.appendChild(sub);
-
-contenedor.appendChild(titulo);
-contenedor.appendChild(contenido);
-document.getElementById('ruta-list').appendChild(contenedor);
+          contenido.appendChild(sub);
+          contenedor.appendChild(titulo);
+          contenedor.appendChild(contenido);
+          document.getElementById('ruta-list').appendChild(contenedor);
         }
       });
 
@@ -359,6 +495,5 @@ document.getElementById('ruta-list').appendChild(contenedor);
       });
     });
   </script>
-
 </body>
 </html>
