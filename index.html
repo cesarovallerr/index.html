@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa Rutas Urbanas de Saltillo</title>
+  <title>Saltillo en Ruta</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">document.getElementById('locate-btn').addEventListener('click', () => {
   if (navigator.geolocation) {
@@ -311,19 +311,13 @@
   </div>
 
   <div id="sidebar">
-    <!-- Logo dentro del panel lateral -->
-    <img src="logo.png" alt="Logo de Rutas Urbanas de Saltillo" class="logo">
+    
+    <img src="LOGO.jpg" alt="Logo de Rutas Urbanas de Saltillo" class="logo">
 
     <h3 style="color: #fbbf24; font-size: 1.1rem; margin-top: 0.5rem;">¡SALTILLO EN RUTA!</h3>
-    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes visualizar las rutas de transporte urbano y explorar la ciudad. Este mensaje puede ser modificado fácilmente en el código HTML.</p>
+    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes visualizar las rutas de transporte urbano y explorar la ciudad. </p>
     <h3 style="color: #ffffff; font-size: 1.1rem; margin-top: 0.5rem;">¡Bienvenido!</h3>
-    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes explorar las rutas de transporte público. Este texto puedes modificarlo fácilmente.</p>
-
-    <div id="social">
-      <a href="https://www.instagram.com/tu_usuario" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" class="social-icon">
-      </a>
-    </div>
+    <p style="font-size: 0.9rem; color: #ddd; margin-bottom: 1rem;">Aquí puedes explorar las rutas de transporte público.</p>
 
     <input type="text" id="buscador" placeholder="Buscar ruta..." style="padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: none;" />
     <h2>Rutas</h2>
@@ -334,10 +328,12 @@
       <p><span class="discontinua"></span> Vuelta</p>
     </div>
 
-    <!-- Ícono de Instagram alineado a la derecha -->
-    <div class="social-icons">
-      <a href="https://instagram.com" target="_blank" title="Instagram">
-        📷
+     <div id="social">
+      <a href="https://www.instagram.com/saltillo_en_ruta" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" class="social-icon">
+        <br>
+        <br>
+    <input type="text" id="informacion" placeholder="queja o sugerencia..." style="padding: 0.5rem; margin-botton: 1rem; border-radius: 5px; border: none;"/> 
       </a>
     </div>
   </div>
@@ -539,4 +535,3 @@
   </script>
 </body>
 </html>
-
